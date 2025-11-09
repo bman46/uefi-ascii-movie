@@ -92,12 +92,6 @@ impl<'a> Iterator for MovieParser<'a> {
             j += 1;
         }
 
-        if let Some(first_content) = art.iter().position(|line| !line.trim().is_empty()) {
-            if first_content > 0 && first_content < art.len() {
-                art.rotate_left(first_content);
-            }
-        }
-
         Some(Frame {
             duration: Duration::new(whole_seconds, nanos),
             lines: art,
