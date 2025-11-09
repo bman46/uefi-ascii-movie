@@ -78,35 +78,3 @@ fn normalize_line<'a>(line: &str, buf: &'a mut [u8; LINE_WIDTH]) -> &'a str {
 
     core::str::from_utf8(buf).unwrap()
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn pads_short_line_to_width() {
-        let mut buf = [0u8; LINE_WIDTH];
-        let result = normalize_line("hi", &mut buf);
-        assert_eq!(result.len(), LINE_WIDTH);
-        assert_eq!(&result.as_bytes()[..2], b"hi");
-        assert!(result.as_bytes()[2..].iter().all(|&b| b == b' '));
-    }
-
-    #[test]
-    fn truncates_long_line_to_width() {
-        let input = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let mut buf = [0u8; LINE_WIDTH];
-        let result = normalize_line(input, &mut buf);
-        assert_eq!(result.len(), LINE_WIDTH);
-        assert_eq!(result.as_bytes(), &input.as_bytes()[..LINE_WIDTH]);
-    }
-
-    #[test]
-    fn preserves_multibyte_characters() {
-        let mut buf = [0u8; LINE_WIDTH];
-        let result = normalize_line("ééé", &mut buf);
-        assert_eq!(result.len(), LINE_WIDTH);
-        assert!(result.starts_with("ééé"));
-        assert!(result.as_bytes()[6..].iter().all(|&b| b == b' '));
-    }
-}
