@@ -21,12 +21,13 @@ fn main() -> Status {
         }
 
         // Query current mode to get console dimensions
-        let mode_info = stdout.current_mode()?.unwrap();
+        let mode_info = stdout.current_mode()?.expect("No current mode available");
         let console_cols = mode_info.columns();
         let _console_rows = mode_info.rows();
         
         // Use console width for line width, capped at MAX_LINE_WIDTH
         let line_width = console_cols.min(MAX_LINE_WIDTH);
+        debug_assert!(line_width <= MAX_LINE_WIDTH, "line_width exceeds MAX_LINE_WIDTH");
         
         stdout.set_color(Color::White, Color::Black)?;
         stdout.clear()?;
