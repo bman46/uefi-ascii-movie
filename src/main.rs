@@ -31,12 +31,14 @@ fn main() -> Status {
         stdout.set_color(Color::White, Color::Black)?;
         stdout.clear()?;
 
+        // Allocate line buffer once and reuse it for all lines
+        let mut line_buf = [0u8; MAX_LINE_WIDTH];
+
         for frame in player::parse_movie(MOVIE_TEXT) {
             stdout.set_cursor_position(0, 0)?;
             stdout.set_color(Color::White, Color::Black)?;
 
             for &line in frame.lines.iter() {
-                let mut line_buf = [0u8; MAX_LINE_WIDTH];
                 let normalized = normalize_line(line, &mut line_buf[..line_width]);
                 write_line(stdout, normalized)?;
             }
